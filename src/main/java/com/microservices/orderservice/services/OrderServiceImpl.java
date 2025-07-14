@@ -7,6 +7,8 @@ import com.microservices.orderservice.repositories.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Log4j2
 public class OrderServiceImpl implements OrderService {
@@ -27,5 +29,13 @@ public class OrderServiceImpl implements OrderService {
         orderEntity = orderRepository.save(orderEntity);
         log.info("=> Order Added: {}", orderEntity);
         return orderEntity.getOrderId();
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        List<OrderEntity> orderEntities = orderRepository.findAll();
+        return orderEntities.stream()
+                .map(Converter::convertFromEntity)
+                .toList();
     }
 }
