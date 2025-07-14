@@ -9,10 +9,11 @@ public class Converter {
 
     public static OrderEntity convertToEntity(Order order) {
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setOrderDate(Instant.now());
-//        orderEntity.setOrderStatus(order.getOrderStatus());
+        orderEntity.setProductId(order.getProductId());
         orderEntity.setQuantity(order.getQuantity());
-//        orderEntity.setAmount(order.getAmount());
+        orderEntity.setOrderDate(Instant.now());
+        orderEntity.setOrderStatus("CREATED");
+        orderEntity.setAmount(order.getTotalAmount());
         return orderEntity;
     }
 

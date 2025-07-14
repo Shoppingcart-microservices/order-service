@@ -11,17 +11,20 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class OrderServiceImpl implements OrderService {
 
-    OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
     @Override
-    public Long createOrder(Order order) {
+    public long createOrder(Order order) {
+        // Order Entity -> save the order with status order created.
+        // Call Product Service -> Block Products (reduce the quantity).
+        // Payment Service -> Payments -> Success -> COMPLETE, else -> CANCELLED.
         OrderEntity orderEntity = Converter.convertToEntity(order);
         log.info("=> Adding order: {}", orderEntity);
-        orderRepository.save(orderEntity);
+        orderEntity = orderRepository.save(orderEntity);
         log.info("=> Order Added: {}", orderEntity);
         return orderEntity.getOrderId();
     }

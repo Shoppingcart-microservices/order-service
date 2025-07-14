@@ -4,5 +4,5 @@ import com.microservices.orderservice.model.Order;
 
 public interface OrderService {
 
-    Long createOrder(Order order);
+    long createOrder(Order order);
 }
