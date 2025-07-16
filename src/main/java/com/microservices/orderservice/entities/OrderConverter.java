@@ -13,16 +13,19 @@ public class OrderConverter {
         orderEntity.setQuantity(order.getQuantity());
         orderEntity.setOrderDate(Instant.now());
         orderEntity.setOrderStatus("CREATED");
-        orderEntity.setAmount(order.getTotalAmount());
+        orderEntity.setAmount(order.getAmount());
         return orderEntity;
     }
 
     public static Order convertFromEntity(OrderEntity orderEntity) {
-        Order product = new Order();
-        product.setProductId(orderEntity.getProductId());
-        product.setTotalAmount(orderEntity.getAmount());
-        product.setQuantity(orderEntity.getQuantity());
-        product.setPaymentMode(PaymentMode.APPLE_PAY);
-        return product;
+        Order order = new Order();
+        order.setOrderId(orderEntity.getOrderId());
+        order.setProductId(orderEntity.getProductId());
+        order.setQuantity(orderEntity.getQuantity());
+        order.setOrderDate(orderEntity.getOrderDate());
+        order.setOrderStatus(orderEntity.getOrderStatus());
+        order.setAmount(orderEntity.getAmount());
+        order.setPaymentMode(PaymentMode.APPLE_PAY);
+        return order;
     }
 }

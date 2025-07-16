@@ -1,6 +1,7 @@
 package com.microservices.orderservice.controllers;
 
 import com.microservices.orderservice.model.Order;
+import com.microservices.orderservice.model.OrderResponse;
 import com.microservices.orderservice.services.OrderService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,12 @@ public class OrderController {
     public ResponseEntity<List<Order>> getOrders() {
         log.info("=> Getting Orders");
         return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable("id") long orderId) {
+        log.info("=> Getting Order by ID {}", orderId);
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
     @PostMapping

@@ -5,6 +5,7 @@ import com.microservices.orderservice.entities.OrderEntity;
 import com.microservices.orderservice.external.client.PaymentService;
 import com.microservices.orderservice.external.client.ProductService;
 import com.microservices.orderservice.model.Order;
+import com.microservices.orderservice.model.OrderResponse;
 import com.microservices.orderservice.model.Payment;
 import com.microservices.orderservice.repositories.OrderRepository;
 import lombok.extern.log4j.Log4j2;
@@ -41,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Call the Payment Service to do the payment.
         log.info("Calling Payment Service to complete the payment.");
-        Payment payment = new Payment(orderEntity.getOrderId(), order.getTotalAmount(), "12345", order.getPaymentMode());
+        Payment payment = new Payment(orderEntity.getOrderId(), order.getAmount(), "12345", order.getPaymentMode());
         String orderStatus;
         try {
             paymentService.doPayment(payment);
@@ -65,5 +66,18 @@ public class OrderServiceImpl implements OrderService {
         return orderEntities.stream()
                 .map(OrderConverter::convertFromEntity)
                 .toList();
+    }
+
+    @Override
+    public OrderResponse getOrderById(long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .map(OrderConverter::convertFromEntity)
+                .orElseThrow(() -> new RuntimeException("Order with id " + orderId + " not found"));
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setOrderId(order.getOrderId());
+        orderResponse.setOrderDate(order.getOrderDate());
+        orderResponse.setOrderStatus(order.getOrderStatus());
+        orderResponse.setAmount(order.getAmount());
+        return orderResponse;
     }
 }
