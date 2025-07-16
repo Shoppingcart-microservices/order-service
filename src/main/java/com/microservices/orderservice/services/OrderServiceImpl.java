@@ -33,6 +33,8 @@ public class OrderServiceImpl implements OrderService {
         // Call the Product service to to reduce the quantity.
         productService.reduceQuantity(orderEntity.getProductId(), orderEntity.getQuantity());
 
+        // Call the Payment Service to do the payment.
+
         orderEntity = orderRepository.save(orderEntity);
         log.info("=> Order Added: {}", orderEntity);
         return orderEntity.getOrderId();
