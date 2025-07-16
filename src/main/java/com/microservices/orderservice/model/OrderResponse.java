@@ -14,4 +14,13 @@ public class OrderResponse {
     private Instant orderDate;
     private String orderStatus;
     private long amount;
+    private ProductDetails productDetails;
+
+    @Data
+    public static class ProductDetails {
+        private Long productId;
+        private String productName;
+        private long price;
+        private long quantity;
+    }
 }

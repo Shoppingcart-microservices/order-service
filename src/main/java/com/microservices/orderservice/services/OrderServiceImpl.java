@@ -7,9 +7,11 @@ import com.microservices.orderservice.external.client.ProductService;
 import com.microservices.orderservice.model.Order;
 import com.microservices.orderservice.model.OrderResponse;
 import com.microservices.orderservice.model.Payment;
+import com.microservices.orderservice.model.Product;
 import com.microservices.orderservice.repositories.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -20,11 +22,14 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductService productService;
     private final PaymentService paymentService;
+    private final RestTemplate restTemplate;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductService productService, PaymentService paymentService) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductService productService,
+                            PaymentService paymentService, RestTemplate restTemplate) {
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.paymentService = paymentService;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -73,11 +78,22 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(orderId)
                 .map(OrderConverter::convertFromEntity)
                 .orElseThrow(() -> new RuntimeException("Order with id " + orderId + " not found"));
+
+        // Call Product service to fetch product info.
+        log.info("Invoking Product Service to fetch the product.");
+        Product product = restTemplate.getForObject("http://ProductService//api/v1/product/" + order.getProductId(), Product.class);
+        OrderResponse.ProductDetails productDetails = new OrderResponse.ProductDetails();
+        productDetails.setProductId(product.getProductId());
+        productDetails.setProductName(product.getProductName());
+        productDetails.setPrice(product.getPrice());
+        productDetails.setQuantity(product.getQuantity());
+
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setOrderId(order.getOrderId());
         orderResponse.setOrderDate(order.getOrderDate());
         orderResponse.setOrderStatus(order.getOrderStatus());
         orderResponse.setAmount(order.getAmount());
+        orderResponse.setProductDetails(productDetails);
         return orderResponse;
     }
 }
