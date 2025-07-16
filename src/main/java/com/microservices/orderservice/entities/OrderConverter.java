@@ -5,7 +5,7 @@ import com.microservices.orderservice.model.PaymentMode;
 
 import java.time.Instant;
 
-public class Converter {
+public class OrderConverter {
 
     public static OrderEntity convertToEntity(Order order) {
         OrderEntity orderEntity = new OrderEntity();
