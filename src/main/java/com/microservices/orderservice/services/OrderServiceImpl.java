@@ -4,10 +4,7 @@ import com.microservices.orderservice.entities.OrderConverter;
 import com.microservices.orderservice.entities.OrderEntity;
 import com.microservices.orderservice.external.client.PaymentService;
 import com.microservices.orderservice.external.client.ProductService;
-import com.microservices.orderservice.model.Order;
-import com.microservices.orderservice.model.OrderResponse;
-import com.microservices.orderservice.model.Payment;
-import com.microservices.orderservice.model.Product;
+import com.microservices.orderservice.model.*;
 import com.microservices.orderservice.repositories.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -81,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Call Product service to fetch product info.
         log.info("Invoking Product Service to fetch the product.");
-        Product product = restTemplate.getForObject("http://ProductService//api/v1/product/" + order.getProductId(), Product.class);
+        Product product = restTemplate.getForObject("http://ProductService/api/v1/product/" + order.getProductId(), Product.class);
         OrderResponse.ProductDetails productDetails = new OrderResponse.ProductDetails();
         productDetails.setProductId(product.getProductId());
         productDetails.setProductName(product.getProductName());
@@ -94,6 +91,19 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setOrderStatus(order.getOrderStatus());
         orderResponse.setAmount(order.getAmount());
         orderResponse.setProductDetails(productDetails);
+
+        // Call Payment service to fetch product info.
+        log.info("Invoking Payment Service to fetch the payment details.");
+        PaymentResponse paymentResponse = restTemplate.getForObject("http://paymentService/api/v1/payment/order/" + order.getOrderId(), PaymentResponse.class);
+        OrderResponse.PaymentDetails paymentDetails = new OrderResponse.PaymentDetails();
+        paymentDetails.setPaymentId(paymentResponse.getPaymentId());
+        paymentDetails.setPaymentStatus(paymentResponse.getPaymentStatus());
+        paymentDetails.setPaymentMode(paymentResponse.getPaymentMode());
+        paymentDetails.setAmount(paymentResponse.getAmount());
+        paymentDetails.setPaymentDate(paymentResponse.getPaymentDate());
+        paymentDetails.setOrderId(order.getOrderId());
+        orderResponse.setPaymentDetails(paymentDetails);
+
         return orderResponse;
     }
 }

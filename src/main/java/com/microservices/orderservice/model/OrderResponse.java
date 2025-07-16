@@ -15,6 +15,7 @@ public class OrderResponse {
     private String orderStatus;
     private long amount;
     private ProductDetails productDetails;
+    private PaymentDetails paymentDetails;
 
     @Data
     public static class ProductDetails {
@@ -22,5 +23,15 @@ public class OrderResponse {
         private String productName;
         private long price;
         private long quantity;
+    }
+
+    @Data
+    public static class PaymentDetails {
+        private long paymentId;
+        private String paymentStatus;
+        private PaymentMode paymentMode;
+        private long amount;
+        private Instant paymentDate;
+        private long orderId;
     }
 }
