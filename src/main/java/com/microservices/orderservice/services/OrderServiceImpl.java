@@ -2,13 +2,13 @@ package com.microservices.orderservice.services;
 
 import com.microservices.orderservice.entities.OrderConverter;
 import com.microservices.orderservice.entities.OrderEntity;
+import com.microservices.orderservice.exception.OrderServiceCustomException;
 import com.microservices.orderservice.external.client.PaymentService;
 import com.microservices.orderservice.external.client.ProductService;
 import com.microservices.orderservice.model.*;
 import com.microservices.orderservice.repositories.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -19,14 +19,12 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductService productService;
     private final PaymentService paymentService;
-    private final RestTemplate restTemplate;
 
     public OrderServiceImpl(OrderRepository orderRepository, ProductService productService,
-                            PaymentService paymentService, RestTemplate restTemplate) {
+                            PaymentService paymentService) {
         this.orderRepository = orderRepository;
         this.productService = productService;
         this.paymentService = paymentService;
-        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -50,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
             paymentService.doPayment(payment);
             log.info("Payment completed. Changing order status to PAYMENT_COMPLETED.");
             orderStatus = "PAYMENT_COMPLETED";
-        } catch (Exception e) {
+        } catch (OrderServiceCustomException e) {
             log.info("Error during payment process. Changing order status to PAYMENT_FAILED.");
             orderStatus = "PAYMENT_FAILED";
         }
@@ -78,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Call Product service to fetch product info.
         log.info("Invoking Product Service to fetch the product.");
-        Product product = restTemplate.getForObject("http://ProductService/api/v1/product/" + order.getProductId(), Product.class);
+        Product product = productService.getProductById(order.getProductId()).getBody();
         OrderResponse.ProductDetails productDetails = new OrderResponse.ProductDetails();
         productDetails.setProductId(product.getProductId());
         productDetails.setProductName(product.getProductName());
@@ -94,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Call Payment service to fetch product info.
         log.info("Invoking Payment Service to fetch the payment details.");
-        PaymentResponse paymentResponse = restTemplate.getForObject("http://paymentService/api/v1/payment/order/" + order.getOrderId(), PaymentResponse.class);
+        PaymentResponse paymentResponse = paymentService.getPaymentDetailsByOrderId(order.getOrderId()).getBody();
         OrderResponse.PaymentDetails paymentDetails = new OrderResponse.PaymentDetails();
         paymentDetails.setPaymentId(paymentResponse.getPaymentId());
         paymentDetails.setPaymentStatus(paymentResponse.getPaymentStatus());

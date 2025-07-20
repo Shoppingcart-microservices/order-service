@@ -4,6 +4,11 @@ spring:
   config:
     import: configserver:http://localhost:9000
 
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
   datasource:
     url: jdbc:mysql://localhost:3306/orderdb
     username: kostas
@@ -30,6 +35,41 @@ management:
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,metrics,prometheus,circuitbreakers
+  endpoint:
+    circuitbreakers:
+      enabled: true
 
 server:
   port: 8081
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      ProductServicereduceQuantitylonglong:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        permittedNumberOfCallsInHalfOpenState: 5
+        waitDurationInOpenState: 10s
+      ProductServicegetProductByIdlong:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        permittedNumberOfCallsInHalfOpenState: 5
+        waitDurationInOpenState: 10s
+      PaymentServicegetPaymentDetailsByOrderIdlong:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        permittedNumberOfCallsInHalfOpenState: 5
+        waitDurationInOpenState: 10s
