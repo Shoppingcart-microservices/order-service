@@ -6,6 +6,7 @@ import com.microservices.orderservice.services.OrderService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +28,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('Customer')")
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable("id") long orderId) {
         log.info("=> Getting Order by ID {}", orderId);
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
+    @PreAuthorize("hasAuthority('Customer')")
     @PostMapping
     public ResponseEntity<Long> createOrder(@RequestBody Order order) {
         long orderId = orderService.createOrder(order);
