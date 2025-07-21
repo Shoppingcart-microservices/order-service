@@ -3,6 +3,23 @@ spring:
     name: orderService
   config:
     import: configserver:http://localhost:9000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://integrator-7831622.okta.com/oauth2/default
+      client:
+        registration:
+          internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope:
+              - internal
+            client-id: 0oatf55a1xwH8DLK3697
+            client-secret: _ekb6sqS798LijZaZ7dUNrMm4L8vfEITi7CLwTOsdNR15DVNq8BppiFcnXmoaQOl
+        provider:
+          okta:
+            issuer-uri: https://integrator-7831622.okta.com/oauth2/default
 
   cloud:
     openfeign:
