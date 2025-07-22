@@ -17,9 +17,6 @@ public class OAuthRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        template.header("Name", "Konstantinos");
-        template.header("Accept", "application/json");
-        template.header("Content-Type", "application/json");
         template.header("Authorization", "Bearer " + getToken());
     }
 
