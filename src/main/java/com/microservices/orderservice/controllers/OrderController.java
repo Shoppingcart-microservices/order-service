@@ -28,14 +28,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @PreAuthorize("hasAuthority('Admin') || hasAuthority('Customer')")
+    @PreAuthorize("hasAnyRole('Admin', 'Customer')")
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable("id") long orderId) {
         log.info("=> Getting Order by ID {}", orderId);
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
-    @PreAuthorize("hasAuthority('Customer')")
+    @PreAuthorize("hasAnyRole('Customer')")
     @PostMapping
     public ResponseEntity<Long> createOrder(@RequestBody Order order) {
         long orderId = orderService.createOrder(order);
