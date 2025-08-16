@@ -9,6 +9,7 @@ public class OrderConverter {
 
     public static OrderEntity convertToEntity(Order order) {
         OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderId(order.getOrderId());
         orderEntity.setProductId(order.getProductId());
         orderEntity.setQuantity(order.getQuantity());
         orderEntity.setOrderDate(Instant.now());
