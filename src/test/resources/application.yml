@@ -2,7 +2,12 @@ spring:
   application:
     name: orderService
   config:
-    import: configserver:http://localhost:9000
+    import: optional:configserver:http://localhost:9000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-hj6kwec2hubzqrrk.eu.auth0.com/
 
   datasource:
     url: jdbc:mysql://localhost:3306/orderdb
