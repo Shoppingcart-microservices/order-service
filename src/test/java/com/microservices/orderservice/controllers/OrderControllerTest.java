@@ -10,8 +10,7 @@ import com.microservices.orderservice.model.Order;
 import com.microservices.orderservice.model.PaymentMode;
 import com.microservices.orderservice.repositories.OrderRepository;
 import com.microservices.orderservice.services.OrderService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +47,7 @@ class OrderControllerTest {
     private OrderRepository orderRepository;
 
     @Test
-    public void test_WhenPlaceOrder_DoPayment_Success() throws Exception {
+    void test_WhenPlaceOrder_DoPayment_Success() throws Exception {
 
         Order order = new Order();
         order.setOrderDate(Instant.now());
@@ -74,6 +73,15 @@ class OrderControllerTest {
         Assertions.assertEquals(order.getProductId(), o.getProductId());
         Assertions.assertEquals(order.getQuantity(), o.getQuantity());
         Assertions.assertEquals(order.getAmount(), o.getAmount());
+    }
+
+    @AfterEach
+    void afterEach() {
+        orderRepository.deleteAll();
+    }
+
+    private void clearAllData() {
+        orderRepository.deleteAll();
     }
 
     private final ObjectMapper objectMapper = new ObjectMapper()
