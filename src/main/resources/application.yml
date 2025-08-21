@@ -2,7 +2,7 @@ spring:
   application:
     name: orderService
   config:
-    import: configserver:http://localhost:9000
+    import: optional:configserver:${CONFIG_SERVER_ADDRESS:http://localhost:9000}
   security:
     oauth2:
       resourceserver:
