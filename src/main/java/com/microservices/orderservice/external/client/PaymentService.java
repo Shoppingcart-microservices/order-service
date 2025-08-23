@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "paymentService/api/v1/payment", fallback = ExternalService.class)
+@FeignClient(name = "payment", fallback = ExternalService.class, url = "http://payment-service-svc/api/v1/payment")
 public interface PaymentService {
 
     @PostMapping

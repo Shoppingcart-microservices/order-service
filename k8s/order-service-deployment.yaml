@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-app
+  labels:
+    app: order-service-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service-app
+  template:
+    metadata:
+      name: order-service-app
+      labels:
+        app: order-service-app
+    spec:
+      containers:
+        - name: order-service-app
+          image: konped/order-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          env:
+            - name: CONFIG_SERVER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: cloud-gateway-cm
+                  key: CONFIG_SERVER_INSTANCE_HOSTNAME
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-cm
+                  key: hostname
+      restartPolicy: Always

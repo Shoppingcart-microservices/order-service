@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "ProductService/api/v1/product/", fallback = ExternalService.class)
+@FeignClient(name = "product", fallback = ExternalService.class, url = "http://product-service-svc/api/v1/product")
 public interface ProductService {
 
     @PutMapping("reduceQuantity/{id}")

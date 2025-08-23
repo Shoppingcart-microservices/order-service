@@ -15,9 +15,9 @@ spring:
         enabled: true
 
   datasource:
-    url: jdbc:mysql://localhost:3306/orderdb
-    username: kostas
-    password: deko12345
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/orderdb
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -37,9 +37,9 @@ management:
   tracing:
     sampling:
       probability: 1.0
-  zipkin:
-    tracing:
-      endpoint: http://localhost:9411/api/v2/spans
+#  zipkin:
+#    tracing:
+#      endpoint: http://localhost:9411/api/v2/spans
   endpoints:
     web:
       exposure:
